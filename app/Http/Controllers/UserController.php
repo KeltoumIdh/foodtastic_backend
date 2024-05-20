@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -23,7 +24,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
-            'address' => 'nullable|string|max:255',
+            'adress' => 'nullable|string|max:255',
             'role' => 'nullable|in:admin,user',
         ]);
 
@@ -31,18 +32,27 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'address' => $request->address,
+            'address' => $request->adress,
             'role' => $request->role ?? 'user',
         ]);
 
         return response()->json(['user' => $user], 201);
     }
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
 
+        if (Auth::attempt($credentials)) {
+            return response()->json(Auth::user(), 200);
+        }
+
+        return response()->json(['message' => 'Invalid credentials'], 401);
+    }
     // Get a specific user by ID
     public function show($id)
     {
         $user = User::findOrFail($id);
-        return response()->json(['user' => $user], 200);
+        return response()->json( $user, 200);
     }
 
     // Update a user
