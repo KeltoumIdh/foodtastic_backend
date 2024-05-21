@@ -20,6 +20,7 @@ Route::get('/products', function () {
 });
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
+Route::put('/user/{id}', [UserController::class, 'update']);
 Route::post('/user/register', [UserController::class, 'store']);
 Route::post('/user/login', [UserController::class, 'login']);
 

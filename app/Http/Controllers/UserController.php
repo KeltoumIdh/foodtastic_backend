@@ -38,6 +38,37 @@ class UserController extends Controller
 
         return response()->json(['user' => $user], 201);
     }
+
+
+    /**
+     * update auth user info
+     * @param Request $request
+     * @param string $id
+     */
+    public function update(string $id, Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'adress' => 'nullable|string|max:255',
+        ]);
+
+
+        // Get user info
+        $userData = User::findOrFail($id);
+
+
+        // Save Data
+        $userData->name = $request->name;
+        $userData->email = $request->email;
+        $userData->address = $request->adress;
+        $userData->save();
+
+
+        // return success message
+        return response()->json(['ok' => true, 'message' => 'updated'], 201);
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -55,23 +86,23 @@ class UserController extends Controller
         return response()->json( $user, 200);
     }
 
-    // Update a user
-    public function update(Request $request, $id)
-    {
-        $user = User::findOrFail($id);
+    // // Update a user
+    // public function update(Request $request, $id)
+    // {
+    //     $user = User::findOrFail($id);
 
-        $request->validate([
-            'name' => 'string|max:255',
-            'email' => 'email|unique:users,email,' . $user->id,
-            'password' => 'string|min:6',
-            'address' => 'nullable|string|max:255',
-            'role' => 'nullable|in:admin,user',
-        ]);
+    //     $request->validate([
+    //         'name' => 'string|max:255',
+    //         'email' => 'email|unique:users,email,' . $user->id,
+    //         'password' => 'string|min:6',
+    //         'address' => 'nullable|string|max:255',
+    //         'role' => 'nullable|in:admin,user',
+    //     ]);
 
-        $user->update($request->all());
+    //     $user->update($request->all());
 
-        return response()->json(['user' => $user], 200);
-    }
+    //     return response()->json(['user' => $user], 200);
+    // }
 
     // Delete a user
     public function destroy($id)
