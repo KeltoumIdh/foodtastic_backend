@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CitiesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProducerController;
@@ -63,5 +64,13 @@ Route::controller(CategoryController::class)->group(function () {
     Route::post('/categories/edit/{id}', 'edit');
     Route::delete('/categories/delete/{id}', 'delete');
     Route::post('/categories/update/{id}', 'update');
+});
+//cities
+Route::controller(CitiesController::class)->group(function () {
+    Route::get('/cities', 'index');
+    Route::post('/cities/add', 'store');
+    Route::post('/cities/edit/{id}', 'edit');
+    Route::delete('/cities/delete/{id}', 'delete');
+    Route::post('/cities/update/{id}', 'update');
 });
 Route::get('/products/{id}', [ProductController::class, 'show']);
