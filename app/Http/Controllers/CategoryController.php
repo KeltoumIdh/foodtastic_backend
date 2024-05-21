@@ -12,14 +12,14 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::all();
-        return response()->json(['categories' => $categories], 200);
+        return response()->json( $categories, 200);
     }
 
     // Create a new category
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:categories',
+            'name' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -57,7 +57,7 @@ class CategoryController extends Controller
     }
 
     // Delete a category
-    public function destroy($id)
+    public function delete($id)
     {
         $category = Category::findOrFail($id);
         $category->delete();
