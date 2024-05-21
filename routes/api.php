@@ -16,7 +16,7 @@ use GuzzleHttp\Psr7\Response;
 
 Route::get('/products', function () {
     $products = Product::get();
-    return response()->json($products);
+    return response()->json($products ?? []);
 });
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
