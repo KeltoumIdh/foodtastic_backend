@@ -178,7 +178,7 @@ class ProductController extends Controller
     public function edit($id)
     {
 
-        $product = product::find($id);
+        $product = product::findOrFail($id);
         return response()->json($product ?? [], 200);
     }
     // Delete a product

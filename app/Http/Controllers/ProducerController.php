@@ -19,15 +19,23 @@ class ProducerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+{
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'contact_info' => 'required|string|max:255',
+        'city_id' => 'required|integer|exists:cities,id',
+    ]);
 
-        $producer = Producer::create($validated);
 
-        return response()->json($producer, 201);
-    }
+    $producer = new Producer();
+    $producer->name = $validatedData['name'];
+    $producer->contact_info = $validatedData['contact_info'];
+    $producer->city_id = $validatedData['city_id'];
+    $producer->save();
+
+    return response()->json(['message' => 'Producer created successfully!'], 201);
+}
+
 
     /**
      * Display the specified resource.
@@ -51,6 +59,8 @@ class ProducerController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'contact_info' => 'required|string|max:255',
+            'city_id' => 'required|integer|exists:cities,id',
         ]);
 
         $producer->update($validated);
@@ -64,8 +74,9 @@ class ProducerController extends Controller
      * @param  \App\Models\Producer  $producer
      * @return \Illuminate\Http\Response
      */
-    public function delete(Producer $producer)
+    public function delete(Producer $id)
     {
+        $producer = Producer::findOrFail($id);
         $producer->delete();
 
         return response()->json(null, 204);

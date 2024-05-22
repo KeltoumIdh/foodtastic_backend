@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,11 @@ Route::get('/user/{id}', [UserController::class, 'show']);
 Route::put('/user/{id}', [UserController::class, 'update']);
 Route::post('/user/register', [UserController::class, 'store']);
 Route::post('/user/login', [UserController::class, 'login']);
+// admins
+Route::get('/admins', [AdminController::class, 'index']);
+Route::get('/admins/{id}', [AdminController::class, 'show']);
+Route::put('/admins/{id}', [AdminController::class, 'update']);
+Route::post('/admins/add', [AdminController::class, 'store']);
 
 //dashboard
 Route::controller(DashboardController::class)->group(function () {
