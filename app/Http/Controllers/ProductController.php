@@ -66,64 +66,64 @@ class ProductController extends Controller
     //     return response()->json(['product' => $product], 201);
     // }
     public function store(Request $request)
-{
-    // Validate the incoming request data
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|string|max:255',
-        'categorie' => 'required|integer', // Assuming 'categorie' is the category ID sent from the frontend
-        'producer' => 'required|integer',
-        'quantity' => 'required|integer|min:1',
-        'price' => 'required|numeric|min:0',
-        // 'image' => 'nullable|image|mimes:jpg,jpeg,png',
-    ]);
+    {
+        // Validate the incoming request data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'categorie' => 'required|integer', // Assuming 'categorie' is the category ID sent from the frontend
+            'producer' => 'required|integer',
+            'quantity' => 'required|integer|min:1',
+            'price' => 'required|numeric|min:0',
+            // 'image' => 'nullable|image|mimes:jpg,jpeg,png',
+        ]);
 
-    if ($validator->fails()) {
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $ext = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $ext;
+            $file->move('images/products/', $filename);
+            $imagePath = $filename;
+        }
+
+
+        $quantity = $request->quantity;
+
+        // Determine the status based on quantity
+        $low_stock_threshold = 0.1 * $quantity; // 10% of initial quantity
+        if ($quantity == 0) {
+            $status = 'Rupture de stock';
+        } elseif ($quantity <= 10) {
+            $status = 'Stock faible';
+        } else {
+            $status = 'Disponible';
+        }
+
+        // Create the product
+        $product = Product::create([
+            'name' => $request->name,
+            'category_id' => $request->categorie,
+            'producer_id' => $request->producer,
+            'quantity' => $quantity,
+            'price' => $request->price,
+            'image_path' => $imagePath,
+            'status' => $status,
+            'initial_quantity' => $quantity, // Set initial_quantity to quantity
+            'quantity_available' => $quantity,
+            'quantity_sold' => 0,
+        ]);
+
         return response()->json([
-            'errors' => $validator->errors()
-        ], 422);
+            'message' => 'Product created successfully!',
+            'product' => $product
+        ], 201);
     }
-
-    $imagePath = null;
-    if ($request->hasFile('image')) {
-        $file = $request->file('image');
-        $ext = $file->getClientOriginalExtension();
-        $filename = time() . '.' . $ext;
-        $file->move('images/products/', $filename);
-        $imagePath = $filename;
-    }
-
-
-    $quantity = $request->quantity;
-
-    // Determine the status based on quantity
-    $low_stock_threshold = 0.1 * $quantity; // 10% of initial quantity
-    if ($quantity == 0) {
-        $status = 'Rupture de stock';
-    } elseif ($quantity <= 10) {
-        $status = 'Stock faible';
-    } else {
-        $status = 'Disponible';
-    }
-
-    // Create the product
-    $product = Product::create([
-        'name' => $request->name,
-        'category_id' => $request->categorie,
-        'producer_id' => $request->producer,
-        'quantity' => $quantity,
-        'price' => $request->price,
-        'image_path' => $imagePath,
-        'status' => $status,
-        'initial_quantity' => $quantity, // Set initial_quantity to quantity
-        'quantity_available' => $quantity,
-        'quantity_sold' => 0,
-    ]);
-
-    return response()->json([
-        'message' => 'Product created successfully!',
-        'product' => $product
-    ], 201);
-}
 
 
 
@@ -133,11 +133,15 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         return response()->json(['product' => $product], 200);
     }
-    
+
     // Get a specific product by ID
-    public function getProductById($id)
+    public function getProductById(int $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::where('id', $id)->first();
+        if (!$product) {
+            return response()->json(["message" => "not_found"], 404);
+        }
+
         return response()->json(['product' => $product], 200);
     }
 

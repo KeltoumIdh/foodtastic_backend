@@ -81,4 +81,3 @@ Route::controller(CitiesController::class)->group(function () {
     Route::delete('/cities/delete/{id}', 'delete');
     Route::put('/cities/update/{id}', 'update');
 });
-Route::get('/products/{id}', [ProductController::class, 'show']);
