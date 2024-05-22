@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Str;
 
 class ProductController extends Controller
 {
@@ -83,14 +84,27 @@ class ProductController extends Controller
             ], 422);
         }
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $ext = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $ext;
-            $file->move('images/products/', $filename);
-            $imagePath = $filename;
-        }
+        // $imagePath = null;
+        // if ($request->hasFile('image')) {
+        //     $file = $request->file('image');
+        //     $ext = $file->getClientOriginalExtension();
+        //     $filename = time() . '.' . $ext;
+        //     $file->move('images/products/', $filename);
+        //     $imagePath = $filename;
+        // }
+        
+        // $imagePath = 'default.png';
+        // if($request->hasFile('images')){
+        //     foreach($request->file('images') as $file)
+        //     {
+        //         $img_extension = $file->getClientOriginalExtension();
+        //         if (in_array($img_extension, ['png', 'jpg', 'jpeg'])) {
+        //             $new_name = Str::random(20) . '.' . $img_extension;
+        //             $file->move(public_path('images/products'), $new_name);
+        //             $imagePath = $new_name;
+        //         }
+        //     }
+        // }
 
 
         $quantity = $request->quantity;
@@ -112,7 +126,7 @@ class ProductController extends Controller
             'producer_id' => $request->producer,
             'quantity' => $quantity,
             'price' => $request->price,
-            'image_path' => $imagePath,
+            'image' => $imagePath,
             'status' => $status,
             'initial_quantity' => $quantity, // Set initial_quantity to quantity
             'quantity_available' => $quantity,
