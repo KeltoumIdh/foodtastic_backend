@@ -74,7 +74,7 @@ class ProductController extends Controller
         'producer' => 'required|integer',
         'quantity' => 'required|integer|min:1',
         'price' => 'required|numeric|min:0',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png',
+        // 'image' => 'nullable|image|mimes:jpg,jpeg,png',
     ]);
 
     if ($validator->fails()) {
@@ -83,11 +83,15 @@ class ProductController extends Controller
         ], 422);
     }
 
-    // Handle file upload
     $imagePath = null;
     if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('images/products', 'public');
+        $file = $request->file('image');
+        $ext = $file->getClientOriginalExtension();
+        $filename = time() . '.' . $ext;
+        $file->move('images/products/', $filename);
+        $imagePath = $filename;
     }
+
 
     $quantity = $request->quantity;
 
