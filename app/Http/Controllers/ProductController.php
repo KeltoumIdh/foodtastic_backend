@@ -92,8 +92,8 @@ class ProductController extends Controller
         //     $file->move('images/products/', $filename);
         //     $imagePath = $filename;
         // }
-        
-        // $imagePath = 'default.png';
+
+        $imagePath = null;
         // if($request->hasFile('images')){
         //     foreach($request->file('images') as $file)
         //     {
