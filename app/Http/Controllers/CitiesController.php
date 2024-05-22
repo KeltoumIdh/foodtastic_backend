@@ -44,21 +44,21 @@ class CitiesController extends Controller
     }
 
     // Update a category
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
-        $category = City::findOrFail($id);
+        $city = City::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'name' => 'string|max:255|unique:categories,name,' . $id,
+            'name' => 'string|max:255',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        $category->update($request->all());
+        $city->update($request->all());
 
-        return response()->json(['category' => $category], 200);
+        return response()->json(['city' => $city], 200);
     }
 
     // Delete a category

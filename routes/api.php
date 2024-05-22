@@ -79,6 +79,6 @@ Route::controller(CitiesController::class)->group(function () {
     Route::post('/cities/add', 'store');
     Route::post('/cities/edit/{id}', 'edit');
     Route::delete('/cities/delete/{id}', 'delete');
-    Route::post('/cities/update/{id}', 'update');
+    Route::put('/cities/update/{id}', 'update');
 });
 Route::get('/products/{id}', [ProductController::class, 'show']);
