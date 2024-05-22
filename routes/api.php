@@ -54,7 +54,7 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/products/details/{id}', 'show');
     Route::post('/products/update/{id}', 'update');
     Route::delete('/products/delete/{id}', 'delete');
-    Route::get('/products/{id}', 'show');
+    Route::get('/products/{id}', 'getProductById');
 });
 //producers
 Route::controller(ProducerController::class)->group(function () {
@@ -75,6 +75,7 @@ Route::controller(CategoryController::class)->group(function () {
 //cities
 Route::controller(CitiesController::class)->group(function () {
     Route::get('/cities', 'index');
+    Route::get('/cities/{id}', 'getCityById');
     Route::post('/cities/add', 'store');
     Route::post('/cities/edit/{id}', 'edit');
     Route::delete('/cities/delete/{id}', 'delete');

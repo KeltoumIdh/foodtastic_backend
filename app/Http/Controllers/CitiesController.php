@@ -13,6 +13,14 @@ class CitiesController extends Controller
         $cities = City::all();
         return response()->json( $cities, 200);
     }
+
+    public function getCityById(int $id)
+    {
+        $city = City::findOrFail($id);
+
+        return response()->json( $city, 200);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

@@ -133,6 +133,13 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         return response()->json(['product' => $product], 200);
     }
+    
+    // Get a specific product by ID
+    public function getProductById($id)
+    {
+        $product = Product::findOrFail($id);
+        return response()->json(['product' => $product], 200);
+    }
 
     // Update a product
     public function update(Request $request, $id)
