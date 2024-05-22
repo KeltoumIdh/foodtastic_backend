@@ -74,11 +74,11 @@ class ProducerController extends Controller
      * @param  \App\Models\Producer  $producer
      * @return \Illuminate\Http\Response
      */
-    public function delete(Producer $id)
+    public function delete(int $id)
     {
         $producer = Producer::findOrFail($id);
         $producer->delete();
 
-        return response()->json(null, 204);
+        return response()->json('deleted!', 204);
     }
 }
