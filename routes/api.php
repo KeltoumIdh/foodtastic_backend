@@ -30,6 +30,7 @@ Route::get('/admins', [AdminController::class, 'index']);
 Route::get('/admins/{id}', [AdminController::class, 'show']);
 Route::put('/admins/{id}', [AdminController::class, 'update']);
 Route::post('/admins/add', [AdminController::class, 'store']);
+Route::get('/admins/edit/{id}', [AdminController::class, 'edit']);
 
 //dashboard
 Route::controller(DashboardController::class)->group(function () {
@@ -60,7 +61,7 @@ Route::controller(ProductController::class)->group(function () {
 Route::controller(ProducerController::class)->group(function () {
     Route::get('/producers', 'index');
     Route::post('/producers/add', 'store');
-    Route::post('/producers/edit/{id}', 'edit');
+    Route::get('/producers/edit/{id}', 'edit');
     Route::delete('/producers/delete/{id}', 'delete');
     Route::post('/producers/update/{id}', 'update');
 });

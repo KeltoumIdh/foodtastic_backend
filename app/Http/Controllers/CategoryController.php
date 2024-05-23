@@ -37,6 +37,11 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         return response()->json(['category' => $category], 200);
     }
+    public function edit($id)
+    {
+        $category = Category::findOrFail($id);
+        return response()->json(['category' => $category], 200);
+    }
 
     // Update a category
     public function update(Request $request, $id)
@@ -44,7 +49,7 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'name' => 'string|max:255|unique:categories,name,' . $id,
+            'name' => 'string|max:255',
         ]);
 
         if ($validator->fails()) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Producer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProducerController extends Controller
 {
@@ -19,22 +20,22 @@ class ProducerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-{
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'contact_info' => 'required|string|max:255',
-        'city_id' => 'required|integer|exists:cities,id',
-    ]);
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'contact_info' => 'required|string|max:255',
+            'city_id' => 'required|integer|exists:cities,id',
+        ]);
 
 
-    $producer = new Producer();
-    $producer->name = $validatedData['name'];
-    $producer->contact_info = $validatedData['contact_info'];
-    $producer->city_id = $validatedData['city_id'];
-    $producer->save();
+        $producer = new Producer();
+        $producer->name = $validatedData['name'];
+        $producer->contact_info = $validatedData['contact_info'];
+        $producer->city_id = $validatedData['city_id'];
+        $producer->save();
 
-    return response()->json(['message' => 'Producer created successfully!'], 201);
-}
+        return response()->json(['message' => 'Producer created successfully!'], 201);
+    }
 
 
     /**
@@ -48,25 +49,30 @@ class ProducerController extends Controller
         return $producer;
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Producer  $producer
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Producer $producer)
+    public function edit(int $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'contact_info' => 'required|string|max:255',
-            'city_id' => 'required|integer|exists:cities,id',
-        ]);
+        $city = Producer::findOrFail($id);
 
-        $producer->update($validated);
-
-        return response()->json($producer);
+        return response()->json($city, 200);
     }
+    public function update(Request $request, Producer $producer)
+{
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'contact_info' => 'required|string|max:255',
+        'city_id' => 'required|integer',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 400);
+    }
+
+    $data = $validator->validated();
+
+    $producer->update($data);
+
+    return response()->json($producer);
+}
 
     /**
      * Remove the specified resource from storage.

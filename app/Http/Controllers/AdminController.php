@@ -44,7 +44,7 @@ class AdminController extends Controller
         Log::error('Failed to create admin user', ['error' => $e->getMessage()]);
 
         // Return a generic error response
-        return response()->json(['message' => 'Internal Server Error'], 500);
+        return response()->json(['message' => $e->getMessage()], 500);
     }
 }
 
@@ -72,7 +72,7 @@ class AdminController extends Controller
         // Save Data
         $adminData->name = $request->name;
         $adminData->email = $request->email;
-        $adminData->address = $request->adress;
+        // $adminData->address = $request->adress;
         $adminData->save();
 
 
@@ -92,6 +92,11 @@ class AdminController extends Controller
     }
     // Get a specific admin by ID
     public function show($id)
+    {
+        $admin = User::findOrFail($id);
+        return response()->json( $admin, 200);
+    }
+    public function edit($id)
     {
         $admin = User::findOrFail($id);
         return response()->json( $admin, 200);
