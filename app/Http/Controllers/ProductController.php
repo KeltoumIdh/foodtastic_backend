@@ -223,6 +223,7 @@ class ProductController extends Controller
             'quantity_available' => 'integer|min:0',
             'category_id' => 'exists:categories,id',
             'producer_id' => 'exists:producers,id',
+            'city_id' => 'exists:cities,id',
         ]);
 
         if ($validator->fails()) {
@@ -234,10 +235,10 @@ class ProductController extends Controller
         // Update other fields
         $product->name = $request->input('name');
         $product->price = $request->input('price');
+        $product->city_id = $request->input('city_id');
         $product->category_id = $request->input('category_id');
         $product->producer_id = $request->input('producer_id');
         $product->quantity_available = $request->input('quantity_available');
-        $product->quantity_sold = $request->input('quantity_sold');
 
         // Update status based on quantity
         $quantity = $request->input('quantity_available');
