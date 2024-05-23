@@ -16,10 +16,10 @@ use App\Models\Product;
 use GuzzleHttp\Psr7\Response;
 
 
-Route::get('/products', function () {
-    $products = Product::get();
-    return response()->json($products ?? []);
-});
+// Route::get('/products', function () {
+//     $products = Product::get();
+//     return response()->json($products ?? []);
+// });
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/user/{id}', [UserController::class, 'show']);
 Route::put('/user/{id}', [UserController::class, 'update']);
@@ -49,6 +49,7 @@ Route::controller(DashboardController::class)->group(function () {
 //PRODUCTS
 Route::controller(ProductController::class)->group(function () {
     Route::get('/products', 'index');
+    Route::get('/productsByCity', 'GetByCity');
     Route::get('/products/get/{id}', 'edit');
     Route::post('/products/add', 'store');
     Route::post('/products/edit/{id}', 'edit');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\City;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -44,6 +45,33 @@ class ProductController extends Controller
         }
 
         return response()->json($products ?? [], 200);
+    }
+    public function GetByCity(Request $request)
+    {
+        $cityName = $request->input('city');
+
+        // Validate the input
+        $request->validate([
+            'city' => 'required|string|max:255',
+        ]);
+
+        // Find the city by name
+        $city = City::where('name', $cityName)->first();
+
+        if (!$city) {
+            return response()->json([
+                'data' => [],
+                'message' => 'City not found'
+            ], 404);
+        }
+
+        // Retrieve products by city_id
+        $products = Product::where('city_id', $city->id)->get();
+
+        // Respond with the products
+        return response()->json([
+            'data' => $products
+        ]);
     }
 
     // Create a new product
