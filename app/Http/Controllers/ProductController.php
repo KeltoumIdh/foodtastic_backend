@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\City;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -73,6 +74,27 @@ class ProductController extends Controller
             'data' => $products
         ]);
     }
+    public function GetByCateg(Request $request)
+    {
+        $categoryid = $request->input('category');
+        $city_id = $request->input('city');
+
+        // Validate the input
+        $request->validate([
+            'category_id' => 'integer',
+            'city_id' => 'integer',
+        ]);
+
+
+
+        // Retrieve products by category_id
+        $products = Product::where('category_id', $categoryid)->where('city_id', $city_id)->get();
+
+        // Respond with the products
+        return response()->json([
+            'data' => $products
+        ]);
+    }
 
     // Create a new product
     // public function store(Request $request)
@@ -102,6 +124,7 @@ class ProductController extends Controller
             'categorie' => 'required|integer', // Assuming 'categorie' is the category ID sent from the frontend
             'producer' => 'required|integer',
             'quantity' => 'required|integer|min:1',
+            'city' => 'required|integer',
             'price' => 'required|numeric|min:0',
             // 'image' => 'nullable|image|mimes:jpg,jpeg,png',
         ]);
@@ -152,6 +175,7 @@ class ProductController extends Controller
             'name' => $request->name,
             'category_id' => $request->categorie,
             'producer_id' => $request->producer,
+            'city_id' => $request->city,
             'quantity' => $quantity,
             'price' => $request->price,
             'image' => $imagePath,

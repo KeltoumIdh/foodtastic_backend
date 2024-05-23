@@ -50,6 +50,7 @@ Route::controller(DashboardController::class)->group(function () {
 Route::controller(ProductController::class)->group(function () {
     Route::get('/products', 'index');
     Route::get('/productsByCity', 'GetByCity');
+    Route::get('/productsByCateg', 'GetByCateg');
     Route::get('/products/get/{id}', 'edit');
     Route::post('/products/add', 'store');
     Route::post('/products/edit/{id}', 'edit');
