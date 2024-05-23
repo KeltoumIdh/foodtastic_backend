@@ -42,6 +42,8 @@ Route::controller(DashboardController::class)->group(function () {
     Route::get('/total/user', 'totalUsers');
     Route::get('/total/order', 'totalOrders');
     Route::get('/top/product', 'getTopSellingProducts');
+    Route::get('/top/product/categ', 'getQuantitySoldByCategory');
+    Route::get('/quantity/sold/producer',  'getQuantitySoldByProducer');
     Route::get('/stock/product', 'getAvailableProducts');
     Route::get('/credit/clients', 'getClientCredit');
     Route::get('/order/check', 'getPaymentOrders');

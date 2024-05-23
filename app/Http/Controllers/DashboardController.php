@@ -30,7 +30,7 @@ class DashboardController extends Controller
     {
         try {
 
-            $total = User::where('role','user')->count();
+            $total = User::where('role', 'user')->count();
 
             return response()->json(['total' => $total]);
         } catch (\Exception $e) {
@@ -43,7 +43,7 @@ class DashboardController extends Controller
     {
         try {
 
-            $total = User::where('role','admin')->count();
+            $total = User::where('role', 'admin')->count();
 
             return response()->json(['total' => $total]);
         } catch (\Exception $e) {
@@ -76,6 +76,29 @@ class DashboardController extends Controller
 
         return $topSellingProducts;
     }
+    public function getQuantitySoldByCategory()
+    {
+        $quantitySoldByCategory = Product::select('categories.name as category_name', DB::raw('SUM(products.quantity_sold) as total_quantity_sold'))
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->groupBy('categories.name')
+            ->orderBy('total_quantity_sold', 'desc')
+            ->get();
+
+        return response()->json($quantitySoldByCategory);
+    }
+
+    public function getQuantitySoldByProducer()
+{
+    $quantitySoldByProducer = Product::select('producers.name as producer_name', DB::raw('SUM(products.quantity_sold) as total_quantity_sold'))
+        ->join('producers', 'products.producer_id', '=', 'producers.id')
+        ->groupBy('producers.name')
+        ->orderBy('total_quantity_sold', 'desc')
+        ->get();
+
+    return response()->json($quantitySoldByProducer);
+}
+
+
 
     public function getAvailableProducts()
     {
@@ -96,7 +119,7 @@ class DashboardController extends Controller
             ->whereNotNull('date_debut_credit')
             ->where(function ($query) use ($currentDate, $fiveDaysLater) {
                 $query->whereDate('date_fin_credit', '>=', $currentDate) // Date de fin de crédit doit être après ou égale à la date actuelle
-                      ->orWhereDate('date_fin_credit', '<=', $fiveDaysLater); // Date de fin de crédit doit être avant ou égale à cinq jours plus tard
+                    ->orWhereDate('date_fin_credit', '<=', $fiveDaysLater); // Date de fin de crédit doit être avant ou égale à cinq jours plus tard
             })
             // ->where('remain_price', '>', 0)
             ->orWhereDate('date_fin_credit', '<', $currentDate) // Date de fin de crédit est antérieure à la date actuelle
@@ -112,11 +135,11 @@ class DashboardController extends Controller
     public function getPaymentOrders()
     {
         $orders = DB::table('orders')
-                    ->join('clients', 'orders.client_id', '=', 'clients.id')
-                    ->whereNotNull('orders.payment_method')
-                    ->whereIn('orders.payment_method', ['check', 'trita'])
-                    ->select('clients.*', 'orders.*')
-                    ->get();
+            ->join('clients', 'orders.client_id', '=', 'clients.id')
+            ->whereNotNull('orders.payment_method')
+            ->whereIn('orders.payment_method', ['check', 'trita'])
+            ->select('clients.*', 'orders.*')
+            ->get();
 
         return $orders;
     }
@@ -126,12 +149,10 @@ class DashboardController extends Controller
     public function getFactureOrders()
     {
         $orders = DB::table('orders')
-                    ->join('clients', 'orders.client_id', '=', 'clients.id')
-                    ->select('clients.*', 'orders.*')
-                    ->get();
+            ->join('clients', 'orders.client_id', '=', 'clients.id')
+            ->select('clients.*', 'orders.*')
+            ->get();
 
         return $orders;
     }
-
-
 }
