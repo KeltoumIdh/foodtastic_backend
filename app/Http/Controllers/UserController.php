@@ -46,28 +46,28 @@ class UserController extends Controller
      * @param string $id
      */
     public function update(string $id, Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email',
-            'adress' => 'nullable|string|max:255',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email',
+        'city' => 'nullable|string|max:255',
+        'adress' => 'nullable|string|max:255',
+    ]);
 
+    // Get user info
+    $userData = User::findOrFail($id);
 
-        // Get user info
-        $userData = User::findOrFail($id);
+    // Save Data
+    $userData->name = $request->name;
+    $userData->email = $request->email;
+    $userData->city = $request->city;
+    $userData->address = $request->adress;
+    $userData->save();
 
+    // return success message
+    return response()->json(['ok' => true, 'message' => 'updated'], 201);
+}
 
-        // Save Data
-        $userData->name = $request->name;
-        $userData->email = $request->email;
-        $userData->address = $request->adress;
-        $userData->save();
-
-
-        // return success message
-        return response()->json(['ok' => true, 'message' => 'updated'], 201);
-    }
 
     public function login(Request $request)
     {
@@ -105,10 +105,11 @@ class UserController extends Controller
     // }
 
     // Delete a user
+
     public function destroy($id)
-    {
-        $user = User::findOrFail($id);
-        $user->delete();
-        return response()->json(['message' => 'User deleted successfully'], 200);
-    }
+{
+    $user = User::findOrFail($id);
+    $user->delete();
+    return response()->json(['message' => 'User deleted successfully'], 200);
+}
 }
