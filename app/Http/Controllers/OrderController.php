@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
@@ -66,5 +70,88 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
         $order->delete();
         return response()->json(['message' => 'Order deleted successfully'], 200);
+    }
+
+    // new order
+    public function multipleOrders(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'products' => 'required|array',
+            'total_ammount' => 'required|integer',
+            'auth_user' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        $order = Order::create([
+            "user_id" => $request->auth_user,
+            "total_amount" => $request->total_ammount,
+        ]);
+
+
+        $newOrders = [];
+
+
+        foreach ($request->products as $product) {
+            $OrderItem = OrderItem::create([
+                "order_id" => $order['id'],
+                "product_id" => $product['id'],
+                "quantity" => $product['quantity'],
+                "price" => $product['price'],
+            ]);
+            $newOrders[] = $OrderItem;
+        }
+
+
+        // $data = [
+        //     'title' => 'Page Title Here....',
+        //     'date' => date('m/d/Y'),
+        //     'order' => $order,
+        //     'products' => $newOrders
+        // ];
+
+        // $dompdf = new Dompdf();
+
+        // // Load HTML content from a blade view
+        // $html = view('pdf.view', $data)->render();
+
+        // // Set options (optional)
+        // $options = new Options();
+        // $options->set('isHtml5ParserEnabled', true);
+        // $options->set('isRemoteEnabled', true);
+
+        // // Apply the options
+        // $dompdf->setOptions($options);
+
+        // // Load HTML into Dompdf
+        // $dompdf->loadHtml($html);
+
+        // // Render the PDF
+        // $dompdf->render();
+
+        // // Generate a unique file name for the PDF
+        // $filename = 'assets/uploads/pdf/' . 'document_' . time() . '.pdf';
+        // $name = 'document_' . time() . '.pdf';
+        // // Save the PDF file to the public directory
+        // $path = public_path($filename);
+        // file_put_contents($path, $dompdf->output());
+
+        // //insert doc in order table
+        // $order->invoice = $name;
+        // $order->save();
+        // // Optionally, you can store the file using Laravel's filesystem
+        // // Storage::disk('public')->put($filename, $dompdf->output());
+
+        // // Return a response with a download link
+        // return response()->json(asset($filename));
+
+
+        return response()->json([
+            'message' => 'Success!',
+            "data" => $request->all(),
+            "newOrders" => $newOrders,
+        ], 200);
     }
 }

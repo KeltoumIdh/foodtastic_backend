@@ -32,6 +32,7 @@ Route::get('/admins/{id}', [AdminController::class, 'show']);
 Route::put('/admins/{id}', [AdminController::class, 'update']);
 Route::post('/admins/add', [AdminController::class, 'store']);
 Route::get('/admins/edit/{id}', [AdminController::class, 'edit']);
+Route::delete('/admins/delete/{id}', [AdminController::class, 'delete']);
 
 //dashboard
 Route::controller(DashboardController::class)->group(function () {
@@ -86,4 +87,10 @@ Route::controller(CitiesController::class)->group(function () {
     Route::post('/cities/edit/{id}', 'edit');
     Route::delete('/cities/delete/{id}', 'delete');
     Route::put('/cities/update/{id}', 'update');
+});
+//orders
+Route::controller(OrderController::class)->group(function () {
+    Route::middleware(['auth:sanctum'])->group(function () {
+    });
+    Route::post('/new-order', 'multipleOrders');
 });
