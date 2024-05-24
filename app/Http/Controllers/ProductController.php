@@ -21,6 +21,9 @@ class ProductController extends Controller
     {
         $query = $request->input('query');
         $status = $request->input('status');
+        $search = $request->input('search');
+        $city = $request->input('city');
+        $price = $request->input('price');
 
         $productsQuery = Product::query();
 
@@ -33,7 +36,54 @@ class ProductController extends Controller
         if (!empty($status)) {
             $productsQuery->where('status', $status);
         }
+        if (!empty($search)) {
+            $productsQuery->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%");
+            });
+        }
+        // Filter by status if provided
+        if (!empty($city)) {
+            $productsQuery->where('city_id', $city);
+        }
+        if (!empty($price)) {
+            $productsQuery->where('price','<=', $price);
+        }
+        $products = $productsQuery->orderBy('created_at', 'desc')->paginate(50);
 
+        if ($request->wantsJson()) {
+            return response()->json($products);
+        }
+
+        // If no query or status, return all products
+        if (empty($query) && empty($status)) {
+            $allProducts = Product::paginate(10);
+        }
+
+        return response()->json($products ?? [], 200);
+    }
+    public function getFiltredProducts(Request $request)
+    {
+        $search = $request->input('search');
+        $city = $request->input('city');
+
+        $productsQuery = Product::query();
+
+        if (!empty($search)) {
+            $productsQuery->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%");
+            });
+        }
+        // Filter by status if provided
+        if (!empty($city)) {
+            $productsQuery->where('city_id', $city);
+        }
+        // if ($request->has('city') && $request->city !== 'all') {
+        //     $cityId = $request->city;
+        //     if (!City::where('id', $cityId)->exists()) {
+        //         return response()->json(['error' => 'Invalid city ID'], 400);
+        //     }
+        //     $query->where('city_id', $cityId);
+        // }
         $products = $productsQuery->orderBy('created_at', 'desc')->paginate(50);
 
         if ($request->wantsJson()) {

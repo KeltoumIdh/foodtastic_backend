@@ -61,6 +61,7 @@ Route::controller(ProductController::class)->group(function () {
     Route::post('/products/update/{id}', 'update');
     Route::delete('/products/delete/{id}', 'delete');
     Route::get('/products/{id}', 'getProductById');
+    Route::get('/products/filter', 'getFiltredProducts');
 });
 //producers
 Route::controller(ProducerController::class)->group(function () {
