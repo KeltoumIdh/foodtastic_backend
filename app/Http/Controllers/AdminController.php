@@ -24,7 +24,7 @@ class AdminController extends Controller
     // Validate the request
     $validatedData = $request->validate([
         'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:admins,email',
+        'email' => 'required|email|unique:users,email',
         'password' => 'required|string|min:6',
         'role' => 'nullable|string|in:admin,owner', // Adjust the validation rule as needed
     ]);
@@ -35,7 +35,7 @@ class AdminController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
-            'role' => $validatedData['role'], // Assign the provided role
+            'role' => $validatedData['role'] ?? 'admin', // Assign the provided role
         ]);
 
         return response()->json(['admin' => $admin], 201);
@@ -77,7 +77,7 @@ class AdminController extends Controller
 
 
         // return success message
-        return response()->json(['ok' => true, 'message' => 'updated'], 201);
+        return response()->json(['ok' => true, 'message' => 'updated'], 200);
     }
 
     public function login(Request $request)
@@ -121,10 +121,10 @@ class AdminController extends Controller
     // }
 
     // Delete a admin
-    public function destroy($id)
+    public function delete($id)
     {
-        $admin = User::findOrFail($id);
-        $admin->delete();
+        User::where('id', $id)->delete();
+        
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
 }
